@@ -1,3 +1,7 @@
+"""
+All automated tests inherit from this
+"""
+
 from unittest import TestCase
 from selenium import webdriver
 

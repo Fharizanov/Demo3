@@ -6,6 +6,7 @@ from base_test_case import BaseTestCase
 import page_selectors
 from time import sleep
 
+
 class FluxdayDemoWebpageTest(BaseTestCase):
     def setUp(self):
         # Opens website homepage (http://fluxday.io)
@@ -24,17 +25,20 @@ class FluxdayDemoWebpageTest(BaseTestCase):
         self.driver.find_element_by_xpath(page_selectors.xp_expr_demo).click()
         sleep(2)
         active_demo = self.driver.find_element_by_xpath(page_selectors.xp_expr_active_demo)
-        self.assertEqual(active_demo.get_attribute('class'), 'page-scroll active', 'Button DEMO is not active')
+        self.assertEqual('active' in active_demo.get_attribute('class'), True, 'Button DEMO is not active')
 
     def test_fluxday_demo_webpage(self):
         # Click on 'Try Live Demo'
-        a = self.driver.find_element_by_xpath(page_selectors.xp_expr_try_live)
+        try_live_demo = self.driver.find_element_by_xpath(page_selectors.xp_expr_try_live)
+
         # Check if the button exists
-        self.assertEqual(a.get_attribute('href'), 'http://demo.fluxday.io/')
-        self.driver.get(a.get_attribute('href'))
+        self.assertEqual(try_live_demo.get_attribute('href'), 'http://demo.fluxday.io/')
+        self.driver.get(try_live_demo.get_attribute('href'))
+
         # Checks if there is an email textbox
         self.assertEqual(self.get_page_element_by_id_and_get_id(page_selectors.locator_user_email),
                          page_selectors.locator_user_email, 'Problem with email textbox')
+
         # Checks if there is a password textbox
         self.assertEqual(self.get_page_element_by_id_and_get_id(page_selectors.locator_user_password),
                          page_selectors.locator_user_password, 'Problem with password textbox')

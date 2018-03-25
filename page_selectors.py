@@ -1,3 +1,7 @@
+"""
+This file contains all xpath expressions, locators and variables that are predefined
+"""
+
 xp_expr_logo = '//*[@id="page-top"]/nav/div/div[1]/a/img[1]'
 xp_expr_active_demo = '//*[@id="bs-example-navbar-collapse-1"]/ul/li[5]'
 xp_expr_demo = '//*[@id="bs-example-navbar-collapse-1"]/ul/li[5]/a'
