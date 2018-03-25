@@ -1,5 +1,5 @@
 """
-The purpose of this automated test case is to show on the screen the completed tasks
+The purpose of this automated test case is to verify it is possible to write a comment for a task
 """
 
 from base_test_case import BaseTestCase
@@ -7,7 +7,7 @@ import page_selectors
 from time import sleep
 
 
-class CompletedTasksTest(BaseTestCase):
+class WriteCommentTasksTest(BaseTestCase):
     def setUp(self):
         # Opens website demo homepage (http://demo.fluxday.io/users/sign_in)
         self.driver.get('http://demo.fluxday.io/users/sign_in')
@@ -37,7 +37,7 @@ class CompletedTasksTest(BaseTestCase):
         self.assertEqual(self.driver.find_element_by_xpath(page_selectors.xp_expr_user_name), user,
                          'Login user is not the same')
 
-    def test_my_tasks_btn(self):
+    def test_my_tasks_btn_and_comment(self):
         # Checks if there is a My tasks button and clicks on it
         self.driver.find_element_by_xpath(page_selectors.xp_expr_tasks).click()
         active_pending = self.driver.find_element_by_xpath(page_selectors.xp_expr_pending_btn)
@@ -51,3 +51,30 @@ class CompletedTasksTest(BaseTestCase):
         completed_tasks = self.driver.find_elements_by_xpath(page_selectors.xp_expr_completed_tasks)
         self.assertNotEqual(len(completed_tasks), 0, 'There are no completed tasks')
         self.assertGreater(len(completed_tasks), 0, 'Problem with completed tasks')
+        # Clicks on the first completed task from the top
+        self.driver.find_element_by_xpath(page_selectors.xp_expr_first_completed_task).click()
+        sleep(1)
+        active_first_task = self.driver.find_element_by_xpath(page_selectors.xp_expr_first_completed_task)
+        self.assertEqual('active' in active_first_task.get_attribute('class'), True,
+                         'Clicking on first task is not active')
+        # Click on the number of comments (under 'Add comment' textbox) to show them if any
+        self.driver.find_element_by_xpath(page_selectors.xp_expr_comments_num).click()
+        sleep(1)
+        # Saves the number of comments before submitting new
+        comments_before = self.driver.find_elements_by_xpath(page_selectors.xp_expr_comments)
+        # Checks if there is a 'Add comment' textbox and enters the desired keys
+        self.driver.find_element_by_xpath(page_selectors.xp_expr_comments_textbox).send_keys(page_selectors.comment)
+        # Submits the desired keys as a comment
+        self.driver.find_element_by_xpath(page_selectors.xp_expr_comments_textbox).submit()
+        sleep(1)
+        # Verifies that a comment 'Test comment 1" is submited
+        comments_number = self.driver.find_elements_by_xpath(page_selectors.xp_expr_comments)
+        test_comm = self.driver.find_element_by_xpath(page_selectors.xp_expr_comments_selector.
+                                                      format(cnt_comments=len(comments_number)))
+        self.assertEqual(test_comm.text, ('emp1 Just now\n' + page_selectors.comment) or
+                         ('emp1 1 second ago\n' + page_selectors.comment), 'Submitted comment - different')
+        sleep(1)
+        # Saves comments number after submitting new
+        comments_after = self.driver.find_elements_by_xpath(page_selectors.xp_expr_comments)
+        # Verifies that a new comment was submitted
+        self.assertEqual(len(comments_after), len(comments_before) + 1, "Problem with counting comments")
